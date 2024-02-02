@@ -69,7 +69,7 @@ class BARTProcessor:
 
         return tokens
     
-    def __call__(self, token_seqs: List[np.ndarray], return_lengths: bool = False):
+    def __call__(self, token_seqs: List[torch.Tensor], return_lengths: bool = False):
         lengths = []
         for item in token_seqs:
             lengths.append(len(item))
