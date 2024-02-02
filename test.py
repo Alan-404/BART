@@ -1,11 +1,19 @@
 #%%
-from torchtext.transforms import CharBPETokenizer
+from processing.processor import BARTProcessor
 # %%
-tokenzier = CharBPETokenizer(
-    bpe_encoder_path='./tokenizer/merges.txt',
-    bpe_merges_path='./tokenizer/vocab.json',
-    unk_token="<unk>",
-    suffix="</w>",
-    special_tokens=["<pad>", "<unk>", "<sep>", "<mask>", "<bos>", "<eos>", "</w>"]
+processor = BARTProcessor(
+    tokenizer_path='./tokenizer',
+    return_tokens=False
 )
+# %%
+processor.text2token('Tổng đài viên: xin chào anh\nKhách hàng: chào em', masking=True)
+# %%
+
+# %%
+seqs = [
+    'xin chào tôi là trí',
+    'Tổng đài viên: xin chào anh'
+]
+# %%
+processor.text2token('Tổng đài viên: xin chào anh\nKhách hàng: chào em')
 # %%

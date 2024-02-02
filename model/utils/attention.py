@@ -5,13 +5,14 @@ import math
 from typing import Optional
     
 class MultiHeadAttention(nn.Module):
-    def __init__(self, heads: int, d_model: int, dropout_rate: float) -> None:
+    def __init__(self, d_model: int, heads: int, dropout_rate: float) -> None:
         super().__init__()
         self.heads = heads
         self.d_model = d_model
         self.head_samples = d_model // heads
 
         self.sqrt_sample = math.sqrt(self.head_samples)
+
         self.linear_q = nn.Linear(in_features=d_model, out_features=d_model)
         self.linear_k = nn.Linear(in_features=d_model, out_features=d_model)
         self.linear_v = nn.Linear(in_features=d_model, out_features=d_model)

@@ -36,7 +36,7 @@ class DecoderBlock(nn.Module):
     def __init__(self, d_model: int, heads: int, dropout_rate: float = 0.0) -> None:
         super().__init__()
         self.local_attention = MultiHeadAttention(d_model=d_model, heads=heads, dropout_rate=dropout_rate)
-        self.global_attention = MultiHeadAttention(d_model=d_model, heads=heads, dropout_rate=dropout_rate)
+        self.cross_attention = MultiHeadAttention(d_model=d_model, heads=heads, dropout_rate=dropout_rate)
         self.ffn = FeedForward(dim=d_model, dropout_rate=dropout_rate)
 
         self.layer_norm_1 = nn.LayerNorm(normalized_shape=d_model)
@@ -55,7 +55,7 @@ class DecoderBlock(nn.Module):
 
         # sublayer 2
         local_norm = self.layer_norm_2(local_attention)
-        global_attention = self.global_attention(local_norm, global_context, global_context, padding_mask)
+        global_attention = self.cross_attention(local_norm, global_context, global_context, padding_mask)
         global_attention = local_norm + self.dropout_2(global_attention)
 
         # sublayer 3

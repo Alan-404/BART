@@ -13,7 +13,7 @@ class BART(nn.Module):
         self.encoder = Encoder(token_size=token_size, n_layers=n_layers, d_model=d_model, heads=heads, dropout_rate=dropout_rate)
         self.decoder = Decoder(token_size=token_size, n_layers=n_layers, d_model=d_model, heads=heads, dropout_rate=dropout_rate)
 
-        self.head = nn.Linear(in_features=d_model, out_features=token_size)
+        self.linear = nn.Linear(in_features=d_model, out_features=token_size)
 
     def forward(self, x: torch.Tensor, y: torch.Tensor, x_lengths: Optional[torch.Tensor] = None, y_lengths: Optional[torch.Tensor] = None):
         padding_mask = None
@@ -25,7 +25,10 @@ class BART(nn.Module):
         encoder_output = self.encoder(x, padding_mask)
         decoder_output = self.decoder(y, encoder_output, look_ahead_mask, padding_mask)
 
-        output = self.head(decoder_output)
+        output = self.linear(decoder_output)
+
+        if self.training:
+            return output, encoder_output
 
         return output
 
