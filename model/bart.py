@@ -28,8 +28,7 @@ class BART(nn.Module):
         output = self.head(decoder_output)
 
         return output
-    
-    @torch.jit.script
+
     def infer(self, x: torch.Tensor, y: torch.Tensor, max_steps: int, end_token: int):
         encoder_output = self.encoder(x)
 

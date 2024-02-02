@@ -10,7 +10,4 @@ model = BART(
     dropout_rate=0.1
 )
 # %%
-import torchsummary
-# %%
-torchsummary.summary(model, depth=3)
-# %%
+a = torch.rand
