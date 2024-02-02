@@ -10,4 +10,10 @@ model = BART(
     dropout_rate=0.1
 )
 # %%
-a = torch.rand
+a = torch.tensor([[2,3,4,5,6,7,8,9]])
+b = torch.tensor([[2,3,4,5,6,7,8,9]])
+# %%
+out = model(a, b)
+# %%
+out.shape
+# %%
