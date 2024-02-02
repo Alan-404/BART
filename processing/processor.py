@@ -1,5 +1,6 @@
 import os
 import torch
+import torch.nn.functional as F
 from typing import List
 import numpy as np
 from torchtext.transforms import CharBPETokenizer
@@ -80,7 +81,8 @@ class BARTProcessor:
 
         padded_tokens = []
         for index, item in enumerate(token_seqs):
-            padded_tokens.append(torch.concat(item, torch.tensor(np.array([self.pad_idx] * (max_length - lengths[index]))), dim=-1))
+            padded = F.pad(item, (0, max_length - lengths[index]), mode='constants', value=self.pad_idx)
+            padded_tokens.append(padded)
 
         if return_lengths:
             return torch.stack(padded_tokens), lengths
