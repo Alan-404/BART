@@ -31,6 +31,7 @@ def train(
         eow_token: str = "</w>",
         num_train: Optional[int] = None,
         batch_size: int = 1,
+        num_epochs: int = 1,
         num_workers: int = 1
     ):
     
@@ -75,7 +76,7 @@ def train(
     if torch.cuda.device_count() > 1:
         strategy = DDPStrategy(process_group_backend='gloo', find_unused_parameters=True)
 
-    trainer = Trainer(module, callbacks=callbacks, strategy=strategy, precision='16-mixed')
+    trainer = Trainer(module, callbacks=callbacks, strategy=strategy, precision='16-mixed', max_epochs=num_epochs)
 
     trainer.fit(module, train_dataloaders=dataloader)
 
