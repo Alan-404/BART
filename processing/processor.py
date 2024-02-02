@@ -80,7 +80,7 @@ class BARTProcessor:
 
         padded_tokens = []
         for index, item in enumerate(token_seqs):
-            padded_tokens.append(torch.concat(item, torch.tensor(np.array([self.pad_idx] * (max_length - lengths[index])))))
+            padded_tokens.append(torch.concat(item, torch.tensor(np.array([self.pad_idx] * (max_length - lengths[index]))), dim=-1))
 
         if return_lengths:
             return torch.stack(padded_tokens), lengths
