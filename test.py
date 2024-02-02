@@ -38,3 +38,9 @@ x.shape
 # %%
 y.shape
 # %%
+import pandas as pd
+# %%
+df = pd.read_csv('./datasets/data.csv', sep="\t")
+# %%
+df
+# %%
