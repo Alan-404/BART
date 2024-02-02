@@ -20,7 +20,7 @@ class PositionalEncoding(nn.Module):
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         batch_size, n_ctx, _ = x.size()
-        pos = self.__encode_ctx(n_ctx).to(self.angles.device)
+        pos = self.__encode_ctx(n_ctx).to(x.device)
         
         pos_angles = torch.matmul(pos, self.get_buffer('angles'))
         pos_angles[:, 0::2] = torch.sin(pos_angles[:, 0::2])

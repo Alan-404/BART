@@ -28,3 +28,17 @@ class BART(nn.Module):
         output = self.head(decoder_output)
 
         return output
+    
+    def infer(self, x: torch.Tensor, y: torch.Tensor, max_steps: int, end_token: int):
+        encoder_output = self.encoder(x)
+
+        for _ in range(max_steps):
+            output = self.head(self.decoder(y, encoder_output))
+            pred = torch.argmax(output[:, -1, :], dim=-1)
+
+            if pred == end_token:
+                break
+
+            y = torch.concat([y, pred], dim=-1)
+
+        return y
