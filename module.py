@@ -42,8 +42,8 @@ class BARTModule(L.LightningModule):
     
     def training_step(self, batch: Tuple[torch.Tensor], _: int):
         x = batch[0]
-        observations = batch[1, :-1]
-        y = batch[1, 1:]
+        observations = batch[1][:, :-1]
+        y = batch[1][:, 1:]
 
         x_lengths = batch[2]
         y_lengths = batch[3] - 1
