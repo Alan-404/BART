@@ -9,7 +9,7 @@ import lightning as L
 from torchmetrics.text import ROUGEScore, BLEUScore, Perplexity
 
 from model.bart import BART
-
+import statistics
 from typing import Optional, List, Union, Tuple
 
 class BARTModule(L.LightningModule):
@@ -32,6 +32,8 @@ class BARTModule(L.LightningModule):
 
         self.criterion = BARTCriterion(ignore_index=pad_idx)
         self.metric = BARTMetric(pad_idx=pad_idx)
+
+        self.train_loss = []
     
     def forward(self, x: torch.Tensor, y: torch.Tensor, x_lengths: Optional[torch.Tensor] = None, y_lengths: Optional[torch.Tensor] = None):
         outputs, encoder_outputs = self.model(x, y, x_lengths, y_lengths)
@@ -49,6 +51,7 @@ class BARTModule(L.LightningModule):
         outputs, encoder_outputs = self(x, observations, x_lengths, y_lengths)
 
         loss = self.criterion(encoder_outputs, x) + self.criterion(outputs, y)
+        self.train_loss.append(loss.item())
 
         return loss
     
@@ -56,6 +59,16 @@ class BARTModule(L.LightningModule):
         optimizer = optim.Adam(params=self.parameters(), lr=3e-5, weight_decay=1e-6, betas=[0.9, 0.98], eps=1e-9)
         scheduler = lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=1000)
         return [optimizer], [{'scheduler': scheduler, 'interval': "epoch"}]
+    
+    def on_train_epoch_end(self):
+        loss = statistics.mean(self.train_loss)
+        print(f"Train Loss: {(loss):.4f}")
+        print(f"Current Learning Rate: {self.optimizers().param_groups[0]['lr']}")
+
+        self.log("train_loss", loss, rank_zero_only=True)
+        self.log('learning_rate', self.optimizers().param_groups[0]['lr'], rank_zero_only=True)
+        
+        self.train_loss.clear()
 
 class BARTCriterion:
     def __init__(self, ignore_index: int = -100) -> None:
