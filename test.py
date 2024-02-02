@@ -32,3 +32,9 @@ out = model(x, obs)
 # %%
 out[0].shape
 # %%
+out[1].shape
+# %%
+x.shape
+# %%
+y.shape
+# %%

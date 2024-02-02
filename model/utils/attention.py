@@ -48,7 +48,7 @@ class MultiHeadAttention(nn.Module):
         
         attention_context = self.scaled_dot_product_attention(qw, kw, vw, mask)
 
-        attention_context = torch.permute(attention_context, (0, 2, 1, 3))
+        attention_context = attention_context.permute([0, 2, 1, 3])
         attention_context = attention_context.reshape((batch_size, n_ctx, self.d_model))
         
         attention_context = self.linear_output(attention_context)
