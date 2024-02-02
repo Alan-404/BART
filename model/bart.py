@@ -36,7 +36,7 @@ class BART(nn.Module):
         encoder_output = self.encoder(x)
 
         for _ in range(max_steps):
-            output = self.head(self.decoder(y, encoder_output))
+            output = self.linear(self.decoder(y, encoder_output))
             pred = torch.argmax(output[:, -1, :], dim=-1)
 
             if pred == end_token:

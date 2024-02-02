@@ -47,6 +47,9 @@ class BARTProcessor:
 
         self.puncs = puncs
 
+    def get_token_size(self) -> int:
+        return len(self.tokenizer._encoder)
+
     def clean(self, seq: str):
         seq = re.sub(self.puncs, r" \1 ", seq)
         seq = re.sub("\n", f" {self.sep_token} ", seq)

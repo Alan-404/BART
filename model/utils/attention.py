@@ -42,14 +42,14 @@ class MultiHeadAttention(nn.Module):
         kw = self.linear_k(k)
         vw = self.linear_v(v)
 
-        qw = qw.view((batch_size, n_ctx, self.heads, self.head_samples)).permute([0, 2, 1, 3])
-        kw = kw.view((batch_size, n_ctx, self.heads, self.head_samples)).permute([0, 2, 1, 3])
-        vw = vw.view((batch_size, n_ctx, self.heads, self.head_samples)).permute([0, 2, 1, 3])
+        qw = qw.view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
+        kw = kw.view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
+        vw = vw.view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
         
         attention_context = self.scaled_dot_product_attention(qw, kw, vw, mask)
 
         attention_context = torch.permute(attention_context, (0, 2, 1, 3))
-        attention_context = torch.reshape(attention_context, (batch_size, n_ctx, self.d_model))
+        attention_context = attention_context.reshape((batch_size, n_ctx, self.d_model))
         
         attention_context = self.linear_output(attention_context)
 
