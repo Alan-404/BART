@@ -81,7 +81,7 @@ class BARTProcessor:
 
         padded_tokens = []
         for index, item in enumerate(token_seqs):
-            padded = F.pad(item, (0, max_length - lengths[index]), mode='constants', value=self.pad_idx)
+            padded = F.pad(item, (0, max_length - lengths[index]), mode='constant', value=self.pad_idx)
             padded_tokens.append(padded)
 
         if return_lengths:
