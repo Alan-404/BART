@@ -46,7 +46,7 @@ def train(
         eow_token=eow_token
     )
 
-    if checkpoint is not None:
+    if checkpoint is None:
         module = BARTModule(
             token_size=processor.get_token_size(),
             n_layers=n_layers,
