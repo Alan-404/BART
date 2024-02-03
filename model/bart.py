@@ -20,7 +20,10 @@ class BART(nn.Module):
         look_ahead_mask = None
         if x_lengths is not None and y_lengths is not None:
             padding_mask = generate_mask(x_lengths)
+            padding_mask = (padding_mask == 0).unsqueeze(1).unsqueeze(1)
+            
             look_ahead_mask = generate_look_ahead_mask(y_lengths)
+            look_ahead_mask = (look_ahead_mask == 0)
 
         encoder_output = self.encoder(x, padding_mask)
         decoder_output = self.decoder(y, encoder_output, look_ahead_mask, padding_mask)

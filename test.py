@@ -38,9 +38,24 @@ x.shape
 # %%
 y.shape
 # %%
-import pandas as pd
+import torch
+from model.utils.masking import generate_look_ahead_mask, generate_mask
 # %%
-df = pd.read_csv('./datasets/data.csv', sep="\t")
+x_lengths = torch.tensor([45, 76, 12])
+y_lengths = torch.tensor([45, 50, 12])
 # %%
-df
+padding_mask = generate_mask(x_lengths)
+#%%
+padding_mask = (padding_mask == 0).unsqueeze(1).unsqueeze(1)
+# %%
+look_mask = generate_look_ahead_mask(y_lengths)
+# %%
+a = torch.rand((1, 12, 76, 64))
+b = torch.rand((1, 12, 50, 64))
+# %%
+c = torch.matmul(b, a.transpose(-1, -2))
+# %%
+c.shape
+# %%
+c.masked_fill(padding_mask, float('-inf')).shape
 # %%

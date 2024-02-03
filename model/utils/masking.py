@@ -1,21 +1,27 @@
 import torch
 import numpy as np
 
-def generate_mask(lengths: torch.Tensor):
+def generate_mask(lengths: torch.Tensor, return_max_length: bool = False):
     max_len = torch.max(lengths)
     mask = []
     for length in lengths:
         mask.append(torch.tensor(np.array([1] * int(length.item()) + [0] * int(max_len.item() - length.item()))))
-    return torch.stack(mask)
+    mask = torch.stack(mask).to(lengths.device)
 
-def __generate_look_ahead_mask(length: int) -> torch.Tensor:
-    return torch.triu(torch.ones((length, length)), diagonal=1)
+    if return_max_length:
+        return mask, max_len
+    
+    return mask
 
-def generate_look_ahead_mask(x: torch.Tensor) -> torch.Tensor:
-    padding_mask = generate_mask(x)
+def get_lower_triangular(length: int) -> torch.Tensor:
+    return torch.tril(torch.ones((length, length)), diagonal=0)
 
-    look_ahead_mask = __generate_look_ahead_mask(x.size(1)).to(x.device)
+def generate_look_ahead_mask(lengths: torch.Tensor) -> torch.Tensor:
+    padding_mask, max_length = generate_mask(lengths, return_max_length=True)
+    padding_mask = padding_mask.unsqueeze(1).unsqueeze(1)
 
-    look_ahead_mask = torch.maximum(look_ahead_mask, padding_mask)
+    triangular = get_lower_triangular(max_length).to(lengths.device)
 
-    return look_ahead_mask
+    look_ahead_mask = torch.minimum(triangular, padding_mask)
+
+    return look_ahead_mask.type(torch.int)
