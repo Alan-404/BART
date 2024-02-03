@@ -18,7 +18,7 @@ def train(
         checkpoint: Optional[str] = None,
         saved_checkpoint: str = './checkpoints',
         tokenizer_path: str = "./tokenizer",
-        n_layers: int = 12,
+        n_layers: int = 6,
         d_model: int = 768,
         heads: int = 12,
         dropout_rate: float = 0.1,
@@ -74,7 +74,7 @@ def train(
     
     strategy = 'auto'
     if torch.cuda.device_count() > 1:
-        strategy = DDPStrategy(process_group_backend='gloo', find_unused_parameters=True)
+        strategy = DDPStrategy(process_group_backend='gloo')
 
     trainer = Trainer(callbacks=callbacks, strategy=strategy, precision='16-mixed', max_epochs=num_epochs)
 
