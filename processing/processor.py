@@ -27,7 +27,7 @@ class BARTProcessor:
             unk_token=unk_token,
             suffix=eow_token,
             return_tokens=return_tokens,
-            special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token, 'fpt']
+            special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token]
         )
 
         self.pad_idx = self.tokenizer._encoder[pad_token]
