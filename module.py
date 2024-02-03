@@ -48,13 +48,7 @@ class BARTModule(L.LightningModule):
         x_lengths = batch[2]
         y_lengths = batch[3] - 1
 
-        print(x.shape)
-        print(observations.shape)
-
         outputs, encoder_outputs = self(x, observations, x_lengths, y_lengths)
-
-        print(outputs.shape)
-        print(encoder_outputs.shape)
 
         loss = self.criterion(encoder_outputs, x) + self.criterion(outputs, y)
         self.train_loss.append(loss.item())
@@ -81,7 +75,7 @@ class BARTCriterion:
         self.criterion = nn.CrossEntropyLoss(ignore_index=ignore_index)
 
     def __call__(self, outputs: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
-        return self.criterion(outputs, labels)
+        return self.criterion(outputs.transpose(1, 2), labels)
     
 class BARTMetric:
     def __init__(self, pad_idx: Optional[int] = None) -> None:
