@@ -6,7 +6,8 @@ from tokenizers.pre_tokenizers import Whitespace
 from tokenizers.trainers import BpeTrainer
 from typing import Optional
 
-def main(saved_path: str,
+def main(data_path: str,
+         saved_path: str,
          vocab_size: Optional[int] = None,
          pad_token: str = "<pad>",
          unk_token: str = "<unk>",
@@ -20,7 +21,7 @@ def main(saved_path: str,
     tokenizer.pre_tokenizer = Whitespace()
 
     trainer = BpeTrainer(vocab_size=vocab_size ,special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token], end_of_word_suffix=eow_token)
-    tokenizer.train(files=['./datasets/corpus-full.txt'], trainer=trainer)
+    tokenizer.train(files=[data_path], trainer=trainer)
 
     tokenizer.model.save(saved_path)
 
