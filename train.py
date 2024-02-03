@@ -78,7 +78,7 @@ def train(
 
     trainer = Trainer(callbacks=callbacks, strategy=strategy, precision='16-mixed', max_epochs=num_epochs)
 
-    trainer.fit(module, train_dataloaders=dataloader)
+    trainer.fit(module, train_dataloaders=dataloader, ckpt_path=checkpoint)
 
 if __name__ == '__main__':
     fire.Fire(train)
