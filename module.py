@@ -28,17 +28,15 @@ class BARTModule(L.LightningModule):
             dropout_rate=dropout_rate
         )
 
-        self.encoder_linear = nn.Linear(in_features=d_model, out_features=token_size)
-
         self.criterion = BARTCriterion(ignore_index=pad_idx)
         self.metric = BARTMetric(pad_idx=pad_idx)
 
         self.train_loss = []
     
-    def forward(self, x: torch.Tensor, y: torch.Tensor, x_lengths: Optional[torch.Tensor] = None, y_lengths: Optional[torch.Tensor] = None):
-        outputs, encoder_outputs = self.model(x, y, x_lengths, y_lengths)
-        encoder_outputs = self.encoder_linear(encoder_outputs)
-        return outputs, encoder_outputs
+    # def forward(self, x: torch.Tensor, y: torch.Tensor, x_lengths: Optional[torch.Tensor] = None, y_lengths: Optional[torch.Tensor] = None):
+    #     outputs, encoder_outputs = self.model(x, y, x_lengths, y_lengths)
+    #     encoder_outputs = self.encoder_linear(encoder_outputs)
+    #     return outputs, encoder_outputs
     
     def training_step(self, batch: Tuple[torch.Tensor], _: int):
         x = batch[0]
@@ -48,9 +46,9 @@ class BARTModule(L.LightningModule):
         x_lengths = batch[2]
         y_lengths = batch[3] - 1
 
-        outputs, encoder_outputs = self(x, observations, x_lengths, y_lengths)
+        outputs = self(x, observations, x_lengths, y_lengths)
 
-        loss = self.criterion(encoder_outputs, x) + self.criterion(outputs, y)
+        loss = self.criterion(outputs, y)
         self.train_loss.append(loss.item())
 
         return loss
