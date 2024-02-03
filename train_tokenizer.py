@@ -20,7 +20,7 @@ def main(data_path: str,
     tokenizer = Tokenizer(BPE())
     tokenizer.pre_tokenizer = Whitespace()
 
-    trainer = BpeTrainer(vocab_size=vocab_size ,special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token], end_of_word_suffix=eow_token)
+    trainer = BpeTrainer(vocab_size=vocab_size ,special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token, "fpt"], end_of_word_suffix=eow_token)
     tokenizer.train(files=[data_path], trainer=trainer)
 
     tokenizer.model.save(saved_path)
