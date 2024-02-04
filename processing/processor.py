@@ -2,7 +2,6 @@ import os
 import torch
 import torch.nn.functional as F
 from typing import List
-import numpy as np
 from torchtext.transforms import CharBPETokenizer
 import re
 import random

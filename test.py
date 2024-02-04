@@ -59,3 +59,7 @@ c.shape
 # %%
 c.masked_fill(padding_mask, float('-inf')).shape
 # %%
+import io
+# %%
+data = io.open('./datasets/corpus-full.txt', encoding='utf-8').read().strip().split('\n')
+# %%

@@ -35,8 +35,7 @@ class BARTModule(L.LightningModule):
     
     def forward(self, x: torch.Tensor, y: torch.Tensor, x_lengths: Optional[torch.Tensor] = None, y_lengths: Optional[torch.Tensor] = None):
         outputs = self.model(x, y, x_lengths, y_lengths)
-        # encoder_outputs = self.encoder_linear(encoder_outputs)
-        return outputs# , encoder_outputs
+        return outputs
     
     def training_step(self, batch: Tuple[torch.Tensor], _: int):
         x = batch[0]
