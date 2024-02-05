@@ -37,7 +37,7 @@ class BARTModule(L.LightningModule):
         outputs = self.model(x, y, x_lengths, y_lengths)
         return outputs
     
-    def training_step(self, batch: Tuple[torch.Tensor], _: int):
+    def training_step(self, batch: Tuple[torch.Tensor], _: int) -> torch.Tensor:
         x = batch[0]
         observations = batch[1][:, :-1]
         y = batch[1][:, 1:]
@@ -51,6 +51,22 @@ class BARTModule(L.LightningModule):
         self.train_loss.append(loss.item())
 
         return loss
+    
+    def validation_step(self, batch: Tuple[torch.Tensor], _: int) -> torch.Tensor:
+        x = batch[0]
+        observations = batch[1][:, :-1]
+        y = batch[1][:, 1:]
+
+        x_lengths = batch[2]
+        y_lengths = batch[3] - 1
+        
+        with torch.no_grad():
+            outputs = self(x, observations, x_lengths, y_lengths)
+
+        loss = self.criterion(outputs, y)
+        perplexity = self.metric.perplexity_score(outputs, y)
+
+        return loss, perplexity
     
     def configure_optimizers(self):
         optimizer = optim.Adam(params=self.parameters(), lr=3e-5, weight_decay=1e-6, betas=[0.9, 0.98], eps=1e-9)
