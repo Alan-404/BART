@@ -29,7 +29,7 @@ def main(data_path: str,
     if os.path.exists(mapping_path):
         mapping_tokens = json.load(open(mapping_path, encoding='utf-8'))
 
-    trainer = BpeTrainer(vocab_size=vocab_size ,special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token] + mapping_tokens.keys(), end_of_word_suffix=eow_token)
+    trainer = BpeTrainer(vocab_size=vocab_size ,special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token] + list(mapping_tokens.keys()), end_of_word_suffix=eow_token)
     tokenizer.train(files=[data_path], trainer=trainer)
 
     tokenizer.model.save(saved_path)
