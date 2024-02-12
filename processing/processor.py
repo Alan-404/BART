@@ -82,11 +82,12 @@ class BARTProcessor:
         for index, item in enumerate(token_seqs):
             padded = F.pad(item, (0, max_length - lengths[index]), mode='constant', value=self.pad_idx)
             padded_tokens.append(padded)
+        padded_tokens = torch.stack(padded_tokens)
 
         if return_lengths:
-            return torch.stack(padded_tokens), lengths
+            return padded_tokens, lengths
 
-        return torch.stack(padded_tokens)
+        return padded_tokens
     
     def masking(self, tokens: torch.Tensor):
         n_ctx = len(tokens)
