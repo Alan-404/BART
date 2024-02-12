@@ -7,3 +7,4 @@
 /lightning_logs
 /.env
 /checkpoints
+/test.ipynb
