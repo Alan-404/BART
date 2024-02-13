@@ -32,8 +32,7 @@ def train(
         num_train: Optional[int] = None,
         batch_size: int = 1,
         num_epochs: int = 1,
-        num_workers: int = 1
-    ):
+        num_workers: int = 1):
     
     processor = BARTProcessor(
         tokenizer_path=tokenizer_path,
