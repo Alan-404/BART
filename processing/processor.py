@@ -18,11 +18,13 @@ class BARTProcessor:
                  eow_token: str = "</w>",
                  return_tokens: bool = False,
                  puncs: List[str] = r"([:./,?!@#$%^&=`~*\(\)\[\]\"\'\-\\])") -> None:
-        assert os.path.exists(tokenizer_path) and os.path.exists(f"{tokenizer_path}/vocab.json") and os.path.exists(f"{tokenizer_path}/merges.txt")
+        vocab_path = f"{tokenizer_path}/vocab.json"
+        merge_path = f"{tokenizer_path}/merges.txt"
+        assert os.path.exists(tokenizer_path) and os.path.exists(vocab_path) and os.path.exists(merge_path)
 
         self.tokenizer = CharBPETokenizer(
-            bpe_encoder_path=f"{tokenizer_path}/vocab.json",
-            bpe_merges_path=f"{tokenizer_path}/merges.txt",
+            bpe_encoder_path=vocab_path,
+            bpe_merges_path=merge_path,
             unk_token=unk_token,
             suffix=eow_token,
             return_tokens=return_tokens,
