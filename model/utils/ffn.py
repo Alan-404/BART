@@ -2,12 +2,12 @@ import torch
 import torch.nn as nn
 
 class FeedForward(nn.Module):
-    def __init__(self, dim: int, dropout_rate: float = 0.0) -> None:
+    def __init__(self, dim: int, dropout_rate: float = 0.0, n_expand: int = 4) -> None:
         super().__init__()
-        self.hidden_layer = nn.Linear(in_features=dim, out_features=4*dim)
+        self.hidden_layer = nn.Linear(in_features=dim, out_features=n_expand*dim)
         self.activation = nn.GELU()
         self.dropout = nn.Dropout(p=dropout_rate)
-        self.output_layer = nn.Linear(in_features=4*dim, out_features=dim)
+        self.output_layer = nn.Linear(in_features=n_expand*dim, out_features=dim)
         
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.hidden_layer(x)

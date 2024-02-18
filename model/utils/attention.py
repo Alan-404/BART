@@ -21,7 +21,7 @@ class MultiHeadAttention(nn.Module):
 
         self.linear_output = nn.Linear(in_features=d_model, out_features=d_model)
 
-    def scaled_dot_product_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, mask: Optional[torch.Tensor] = None) -> [torch.Tensor, torch.Tensor]:
+    def scaled_dot_product_attention(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         attention_scores = torch.matmul(q, k.transpose(-1, -2))
         attention_scores = attention_scores/self.sqrt_sample
 
@@ -35,18 +35,14 @@ class MultiHeadAttention(nn.Module):
         
         return attention_context
     
-    def forward(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, mask: Optional[torch.Tensor] = None) -> [torch.Tensor, torch.Tensor]:
+    def forward(self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         batch_size, n_ctx, _ = q.size()
         
-        qw = self.linear_q(q)
-        kw = self.linear_k(k)
-        vw = self.linear_v(v)
-
-        qw = qw.view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
-        kw = kw.view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
-        vw = vw.view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
+        q = self.linear_q(q).view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
+        k = self.linear_k(k).view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
+        v = self.linear_v(v).view((batch_size, -1, self.heads, self.head_samples)).permute([0, 2, 1, 3])
         
-        attention_context = self.scaled_dot_product_attention(qw, kw, vw, mask)
+        attention_context = self.scaled_dot_product_attention(q, k, v, mask)
 
         attention_context = attention_context.permute([0, 2, 1, 3])
         attention_context = attention_context.reshape((batch_size, n_ctx, self.d_model))

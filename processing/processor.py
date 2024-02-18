@@ -60,10 +60,12 @@ class BARTProcessor:
         seq = seq.lower()
         return seq
 
-    def text2token(self, sentence: str, add_token: bool = False, masking: bool = False):
+    def text2token(self, sentence: str, bos_token: bool = False, eos_token: bool = False, masking: bool = False):
         sentence = self.clean(sentence)
-        if add_token:
-            sentence = f"{self.bos_token} {sentence} {self.eos_token}"
+        if bos_token:
+            sentence = f"{self.bos_token} {sentence}"
+        if eos_token:
+            sentence = f"{sentence} {self.eos_token}"
         tokens = torch.tensor(self.tokenizer(sentence))
 
         if masking:

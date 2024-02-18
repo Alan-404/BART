@@ -4,7 +4,7 @@ import torch.nn as nn
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model: int) -> None:
         super().__init__()
-        self.register_buffer("angles", self.__encode_embedding(d_model))
+        self.angles = nn.Parameter(self.__encode_embedding(d_model), requires_grad=False)
         
     def __encode_ctx(self, n_ctx: int) -> torch.Tensor:
         pos = torch.arange(n_ctx)
@@ -22,7 +22,7 @@ class PositionalEncoding(nn.Module):
         batch_size, n_ctx, _ = x.size()
         pos = self.__encode_ctx(n_ctx).to(x.device)
         
-        pos_angles = torch.matmul(pos, self.get_buffer('angles'))
+        pos_angles = torch.matmul(pos, self.angles)
         pos_angles[:, 0::2] = torch.sin(pos_angles[:, 0::2])
         pos_angles[:, 1::2] = torch.cos(pos_angles[:, 1::2])
 

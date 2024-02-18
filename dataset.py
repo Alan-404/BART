@@ -23,4 +23,4 @@ class BARTDataset(Dataset):
         dialogue = index_df['dialogue']
         summary = index_df['summary']
 
-        return self.processor.text2token(dialogue, masking=True), self.processor.text2token(summary, add_token=True)
+        return self.processor.text2token(dialogue, masking=True), self.processor.text2token(summary, bos_token=True, eos_token=True)

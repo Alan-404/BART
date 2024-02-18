@@ -1,11 +1,10 @@
 import torch
-import numpy as np
 
 def generate_mask(lengths: torch.Tensor, return_max_length: bool = False):
     max_len = torch.max(lengths)
     mask = []
     for length in lengths:
-        mask.append(torch.tensor(np.array([1] * int(length.item()) + [0] * int(max_len.item() - length.item()))))
+        mask.append(torch.tensor([1] * int(length.item()) + [0] * int(max_len.item() - length.item())))
     mask = torch.stack(mask).to(lengths.device)
 
     if return_max_length:
@@ -24,4 +23,4 @@ def generate_look_ahead_mask(lengths: torch.Tensor) -> torch.Tensor:
 
     look_ahead_mask = torch.minimum(triangular, padding_mask)
 
-    return look_ahead_mask.type(torch.int)
+    return look_ahead_mask
