@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 
 from processing.processor import BARTProcessor
 from module import BARTModule
-from dataset import BARTDataset
+from dataset import UnsupervisedBARTDataset
 
 from lightning import Trainer
 from lightning.pytorch.callbacks import ModelCheckpoint
@@ -19,8 +19,8 @@ def train(
         saved_checkpoint: str = './checkpoints',
         tokenizer_path: str = "./tokenizer",
         n_layers: int = 6,
-        d_model: int = 512,
-        heads: int = 8,
+        d_model: int = 768,
+        heads: int = 12,
         dropout_rate: float = 0.1,
         pad_token: str = "<pad>",
         unk_token: str = "<unk>",
@@ -57,15 +57,12 @@ def train(
     else:
         module = BARTModule.load_from_checkpoint(checkpoint, pad_idx=processor.pad_idx)
 
-    def get_batch(batch):
-        dialogue, summary = zip(*batch)
-
-        dialogue, dialogue_lengths = processor(processor.masking(dialogue), return_lengths=True)
-        summary, summary_lengths = processor(processor.add_bound(summary), return_lengths=True)
-
-        return dialogue, summary, dialogue_lengths, summary_lengths
+    def get_batch(batch: torch.Tensor):
+        encoder_inputs, encoder_input_lengths = processor(processor.masking(batch), return_lengths=True)
+        decoder_inputs, decoder_input_lengths = processor(processor.add_bound(batch), return_lengths=True)
+        return encoder_inputs, decoder_inputs, encoder_input_lengths, decoder_input_lengths
     
-    dataset = BARTDataset(train_path, processor=processor, num_examples=num_train)
+    dataset = UnsupervisedBARTDataset(train_path, processor=processor, num_examples=num_train)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=get_batch, num_workers=num_workers)
     
     callbacks = []

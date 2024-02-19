@@ -1,7 +1,7 @@
 from torch.utils.data import Dataset
 from processing.processor import BARTProcessor
 from typing import Optional
-
+import io
 import pandas as pd
 
 class BARTDataset(Dataset):
@@ -23,4 +23,23 @@ class BARTDataset(Dataset):
         dialogue = index_df['dialogue']
         summary = index_df['summary']
 
-        return self.processor.text2token(dialogue, masking=True), self.processor.text2token(summary, bos_token=True, eos_token=True)
+        return self.processor.text2token(dialogue), self.processor.text2token(summary)
+
+class UnsupervisedBARTDataset(Dataset):
+    def __init__(self, manifest_path: str, processor: BARTProcessor, num_examples: Optional[int] = None) -> None:
+        super().__init__()
+        self.prompts = []
+        
+        with open(manifest_path, 'r') as file:
+            for index, line in enumerate(file):
+                if num_examples == index:
+                    break
+                self.prompts.append(line)
+
+        self.processor = processor
+
+    def __len__(self):
+        return len(self.prompts)
+    
+    def __getitem__(self, index: int):
+        return self.processor.text2token(self.prompts[index])

@@ -60,17 +60,24 @@ class BARTProcessor:
         seq = seq.lower()
         return seq
 
-    def text2token(self, sentence: str, bos_token: bool = False, eos_token: bool = False, masking: bool = False):
-        sentence = self.clean(sentence)
+    def add_bound(self, sentence: str, bos_token: bool = False, eos_token: bool = False):
         if bos_token:
             sentence = f"{self.bos_token} {sentence}"
         if eos_token:
             sentence = f"{sentence} {self.eos_token}"
+        return sentence
+    
+    def add_bound_token(self, tokens: torch.Tensor, bos_token: bool = False, eos_token: bool = False):
+        if bos_token:
+            tokens = torch.cat([torch.tensor([self.bos_idx], tokens)])
+        if eos_token:
+            tokens = torch.cat([tokens, torch.tensor([self.eos_idx])])
+
+        return tokens
+
+    def text2token(self, sentence: str):
+        sentence = self.clean(sentence)
         tokens = torch.tensor(self.tokenizer(sentence))
-
-        if masking:
-            tokens = self.masking(tokens)
-
         return tokens
     
     def __call__(self, token_seqs: List[torch.Tensor], return_lengths: bool = False):

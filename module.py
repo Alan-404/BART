@@ -82,6 +82,7 @@ class BARTModule(L.LightningModule):
         self.log('learning_rate', self.optimizers().param_groups[0]['lr'], rank_zero_only=True)
         
         self.train_loss.clear()
+        
 
 class BARTCriterion:
     def __init__(self, ignore_index: int = -100) -> None:
