@@ -17,7 +17,7 @@ class BARTProcessor:
                  eos_token: str = "<eos>", 
                  eow_token: str = "</w>",
                  return_tokens: bool = False,
-                 puncs: List[str] = r"([:./,?!@#$%^&=`~*\(\)\[\]\"\'\-\\])") -> None:
+                 puncs: str = r"([:./,?!@#$%^&=`~*\(\)\[\]\"\'\-\\])") -> None:
         vocab_path = f"{tokenizer_path}/vocab.json"
         merge_path = f"{tokenizer_path}/merges.txt"
         assert os.path.exists(tokenizer_path) and os.path.exists(vocab_path) and os.path.exists(merge_path)

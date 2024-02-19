@@ -9,7 +9,7 @@ class PositionalEncoding(nn.Module):
     def __encode_ctx(self, n_ctx: int) -> torch.Tensor:
         pos = torch.arange(n_ctx)
         pos = pos.unsqueeze(-1)
-        return pos.type(torch.float32)
+        return pos.type(self.angles.dtype)
     
     def __encode_embedding(self, embedding_dim: int) -> torch.Tensor:
         angles = torch.arange(embedding_dim)
