@@ -31,6 +31,8 @@ class BARTProcessor:
             special_tokens=[pad_token, unk_token, sep_token, mask_token, bos_token, eos_token, eow_token]
         )
 
+        self.vocab = list(self.tokenizer._encoder.keys())
+
         self.pad_idx = self.tokenizer._encoder[pad_token]
         self.unk_idx = self.tokenizer._encoder[unk_token]
         self.sep_idx = self.tokenizer._encoder[sep_token]
@@ -79,6 +81,12 @@ class BARTProcessor:
         sentence = self.clean(sentence)
         tokens = torch.tensor(self.tokenizer(sentence))
         return tokens
+    
+    def token2text(self, tokens: torch.Tensor):
+        words = []
+        for token in tokens:
+            words.append(self.vocab[token])
+        return words
     
     def __call__(self, token_seqs: List[torch.Tensor], return_lengths: bool = False):
         lengths = []
